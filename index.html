@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kana Quest">
+<meta name="theme-color" content="#FF7A59">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="manifest" href="manifest.json">
+<title>Kana Quest — Catch &amp; Learn!</title>
+<style>
+  :root{
+    --coral:#FF7A59;
+    --coral-dark:#E85F3F;
+    --teal:#2FC3B8;
+    --teal-dark:#1FA89D;
+    --purple:#9B7CF0;
+    --purple-dark:#7E5CE0;
+    --yellow:#FFC65C;
+    --yellow-dark:#F0A82E;
+    --ink:#3A2E4D;
+    --ink-soft:#7A6F92;
+    --card:#FFFFFF;
+    --bg1:#FFF1D6;
+    --bg2:#FFD9EC;
+    --bg3:#CFF3FF;
+    --good:#3FBF6B;
+    --bad:#FF6B6B;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ min-height:100%; }
+  body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(160deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+    font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;
+    color:var(--ink);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:20px 14px 40px;
+  }
+  .wrap{ width:100%; max-width:480px; }
+  .card{
+    background:var(--card);
+    border-radius:28px;
+    padding:22px 20px 26px;
+    box-shadow:0 14px 0 rgba(122,90,160,0.14), 0 20px 40px rgba(122,90,160,0.18);
+  }
+  h1.brand{
+    font-size:28px;
+    font-weight:900;
+    text-align:center;
+    margin:2px 0 2px;
+    color:var(--coral);
+    letter-spacing:-0.01em;
+  }
+  .brand-sub{
+    text-align:center;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .section-title{
+    font-size:13px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin:18px 0 9px;
+  }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .big-choice{
+    flex:1;
+    min-width:120px;
+    min-height:64px;
+    border:none;
+    border-radius:18px;
+    background:#F4F0FF;
+    color:var(--ink);
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 5px 0 #DCD3F5;
+    transition:transform .08s ease, box-shadow .08s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:10px;
+  }
+  .big-choice:active{ transform:translateY(4px); box-shadow:0 1px 0 #DCD3F5; }
+  .big-choice.on{
+    background:var(--purple);
+    color:#fff;
+    box-shadow:0 5px 0 var(--purple-dark);
+  }
+  .big-choice.on:active{ box-shadow:0 1px 0 var(--purple-dark); }
+  .big-choice.on.teal{ background:var(--teal); box-shadow:0 5px 0 var(--teal-dark); }
+  .big-choice.on.teal:active{ box-shadow:0 1px 0 var(--teal-dark); }
+
+  .start-btn{
+    width:100%;
+    margin-top:22px;
+    min-height:66px;
+    border:none;
+    border-radius:20px;
+    background:var(--coral);
+    color:#fff;
+    font-size:21px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 6px 0 var(--coral-dark);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .start-btn:active{ transform:translateY(5px); box-shadow:0 1px 0 var(--coral-dark); }
+
+  .collection-link{
+    width:100%;
+    margin-top:12px;
+    min-height:52px;
+    border:none;
+    border-radius:18px;
+    background:var(--yellow);
+    color:#7A5200;
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 5px 0 var(--yellow-dark);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .collection-link:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--yellow-dark); }
+
+  /* ---- practice ---- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .stars{
+    font-size:19px;
+    font-weight:900;
+    color:var(--yellow-dark);
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  .quit-btn{
+    border:none;
+    background:#F4F0FF;
+    color:var(--ink-soft);
+    font-size:14px;
+    font-weight:800;
+    border-radius:14px;
+    padding:10px 14px;
+    cursor:pointer;
+  }
+  .quit-btn:active{ transform:scale(0.95); }
+
+  .mascot-row{
+    display:flex;
+    justify-content:center;
+    margin-bottom:6px;
+  }
+  .mascot-row svg{ width:64px; height:64px; transition:transform .18s ease; }
+  .mascot-row.happy svg{ animation:bounce .5s ease; }
+  .mascot-row.sad svg{ animation:wobble .4s ease; }
+  @keyframes bounce{
+    0%{ transform:translateY(0) scale(1); }
+    30%{ transform:translateY(-14px) scale(1.08); }
+    60%{ transform:translateY(0) scale(0.97); }
+    100%{ transform:translateY(0) scale(1); }
+  }
+  @keyframes wobble{
+    0%,100%{ transform:rotate(0deg); }
+    25%{ transform:rotate(-8deg); }
+    75%{ transform:rotate(8deg); }
+  }
+
+  .prompt-card{
+    background:linear-gradient(160deg, #FFF7E8, #FFEAF5);
+    border-radius:22px;
+    padding:26px 16px;
+    text-align:center;
+    margin-bottom:16px;
+  }
+  .script-tag{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .prompt-kana{
+    font-size:88px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1;
+  }
+  .word-badge{
+    width:132px; height:132px;
+    margin:4px auto 0;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:radial-gradient(circle at 35% 28%, #FFFFFF, #FFF3D6 45%, #FFD9A8 100%);
+    box-shadow:
+      inset 0 -10px 16px rgba(180,120,40,0.18),
+      inset 0 6px 10px rgba(255,255,255,0.8),
+      0 10px 20px rgba(122,90,160,0.22);
+  }
+  .word-badge::after{
+    content:"";
+    position:absolute;
+    top:14px; left:22px;
+    width:46px; height:24px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.55);
+    transform:rotate(-18deg);
+  }
+  .word-badge span{
+    font-size:66px;
+    line-height:1;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,0.18));
+  }
+
+  .answers-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .answer-btn{
+    min-height:64px;
+    border:none;
+    border-radius:18px;
+    background:var(--teal);
+    color:#fff;
+    font-size:20px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 5px 0 var(--teal-dark);
+    transition:transform .08s ease, box-shadow .08s ease, background .15s ease;
+  }
+  .answer-btn:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--teal-dark); }
+  .answer-btn.correct{ background:var(--good); box-shadow:0 5px 0 #2C9950; animation:pop .3s ease; }
+  .answer-btn.wrong{ background:var(--bad); box-shadow:0 5px 0 #D94E4E; animation:shake .35s ease; }
+  .answer-btn.disabled{ opacity:0.35; pointer-events:none; }
+  @keyframes pop{ 0%{transform:scale(1);} 40%{transform:scale(1.08);} 100%{transform:scale(1);} }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  /* ---- catch overlay ---- */
+  .catch-overlay{
+    position:fixed; inset:0;
+    background:rgba(58,46,77,0.55);
+    display:flex; align-items:center; justify-content:center;
+    z-index:50;
+    padding:20px;
+  }
+  .catch-card{
+    background:#fff;
+    border-radius:26px;
+    padding:28px 24px;
+    text-align:center;
+    max-width:320px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    animation:catchIn .35s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes catchIn{
+    0%{ transform:scale(0.6); opacity:0; }
+    100%{ transform:scale(1); opacity:1; }
+  }
+  .catch-card svg{ width:120px; height:120px; }
+  .catch-title{ font-size:15px; font-weight:800; color:var(--ink-soft); margin:6px 0 2px; }
+  .catch-name{ font-size:24px; font-weight:900; color:var(--coral); margin-bottom:14px; }
+  .catch-btn{
+    border:none;
+    background:var(--coral);
+    color:#fff;
+    font-weight:800;
+    font-size:16px;
+    padding:12px 28px;
+    border-radius:16px;
+    box-shadow:0 5px 0 var(--coral-dark);
+    cursor:pointer;
+  }
+  .catch-btn:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--coral-dark); }
+
+  /* ---- capture animation ---- */
+  .capture-scene{
+    width:160px; height:200px;
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    margin:0 auto 10px;
+  }
+  .capture-orb{
+    width:70px; height:70px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 30%, #FFE9C9, var(--coral) 55%, var(--purple-dark) 100%);
+    box-shadow:0 10px 24px rgba(0,0,0,0.25), inset 0 -6px 10px rgba(0,0,0,0.15);
+    position:relative;
+    animation:orbDrop .5s cubic-bezier(.2,1.2,.5,1) forwards;
+  }
+  .capture-orb::before{
+    content:"✦";
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    color:#fff;
+    text-shadow:0 0 6px rgba(255,255,255,0.7);
+  }
+  @keyframes orbDrop{
+    0%{ transform:translateY(-140px) scale(0.7); opacity:0; }
+    60%{ transform:translateY(0) scale(1.05); opacity:1; }
+    100%{ transform:translateY(0) scale(1); }
+  }
+  .capture-orb.wobbling{ animation:orbWobble .35s ease-in-out 3; animation-delay:.55s; }
+  @keyframes orbWobble{
+    0%,100%{ transform:rotate(0deg); }
+    25%{ transform:rotate(-18deg); }
+    75%{ transform:rotate(18deg); }
+  }
+  .capture-orb.bursting{ animation:orbBurst .4s ease forwards; animation-delay:1.65s; }
+  @keyframes orbBurst{
+    0%{ transform:scale(1); opacity:1; }
+    50%{ transform:scale(1.5); opacity:0.6; }
+    100%{ transform:scale(2.4); opacity:0; }
+  }
+  .capture-sparkle{
+    position:absolute;
+    left:50%; top:50%;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--yellow);
+    opacity:0;
+    animation:sparkleOut .6s ease forwards;
+    animation-delay:1.7s;
+  }
+  @keyframes sparkleOut{
+    0%{ transform:translate(-50%,-50%) scale(0.4); opacity:1; }
+    100%{ transform:translate(calc(-50% + var(--sx)), calc(-50% + var(--sy))) scale(1); opacity:0; }
+  }
+  .capture-caught-glow{
+    position:absolute;
+    left:50%; top:50%;
+    width:20px; height:20px;
+    border-radius:50%;
+    background:radial-gradient(circle, #fff, transparent 70%);
+    transform:translate(-50%,-50%) scale(0);
+    animation:glowPop .5s ease forwards;
+    animation-delay:1.65s;
+  }
+  @keyframes glowPop{
+    0%{ transform:translate(-50%,-50%) scale(0); opacity:0.9; }
+    100%{ transform:translate(-50%,-50%) scale(9); opacity:0; }
+  }
+  .capture-status{
+    text-align:center;
+    font-size:15px;
+    font-weight:800;
+    color:var(--ink-soft);
+    min-height:20px;
+  }
+
+  /* ---- collection ---- */
+  .collection-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+    margin-top:14px;
+  }
+  .collection-slot{
+    background:#F7F3FF;
+    border-radius:16px;
+    padding:10px 6px 8px;
+    text-align:center;
+  }
+  .collection-slot.special{
+    background:linear-gradient(160deg, #FFF3D0, #FFE0F0);
+    border:2px solid var(--yellow-dark);
+    box-shadow:0 0 0 3px rgba(255,198,92,0.25);
+    position:relative;
+    overflow:hidden;
+  }
+  .collection-slot.special::before{
+    content:"✨";
+    position:absolute;
+    top:2px; right:6px;
+    font-size:13px;
+  }
+  .collection-slot svg{ width:56px; height:56px; }
+  .collection-name{ font-size:11.5px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+  .collection-name.special-label{ color:var(--coral-dark); font-weight:900; }
+  .back-btn{
+    width:100%;
+    margin-top:20px;
+    min-height:56px;
+    border:none;
+    border-radius:18px;
+    background:#F4F0FF;
+    color:var(--ink);
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .back-btn:active{ transform:scale(0.98); }
+
+  .summary-stars{
+    text-align:center;
+    font-size:52px;
+    font-weight:900;
+    color:var(--yellow-dark);
+    margin:10px 0 4px;
+  }
+  .summary-note{ text-align:center; font-size:15px; color:var(--ink-soft); font-weight:700; }
+
+  /* ---- player select ---- */
+  .player-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:6px;
+  }
+  .player-card-wrap{ position:relative; }
+  .player-card{
+    width:100%;
+    border:none;
+    border-radius:22px;
+    background:#F4F0FF;
+    padding:20px 10px 14px;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 5px 0 #DCD3F5;
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .player-card:active{ transform:translateY(4px); box-shadow:0 1px 0 #DCD3F5; }
+  .player-card svg{ width:64px; height:64px; }
+  .player-card .p-name{ font-size:17px; font-weight:900; color:var(--ink); margin-top:4px; }
+  .player-card.other{ background:#FFF3D6; box-shadow:0 5px 0 var(--yellow-dark); }
+  .player-card.other:active{ box-shadow:0 1px 0 var(--yellow-dark); }
+  .player-delete{
+    position:absolute;
+    top:-6px; right:-6px;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:none;
+    background:var(--bad);
+    color:#fff;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 3px 0 #D94E4E;
+    z-index:2;
+  }
+  .player-delete:active{ transform:translateY(2px); box-shadow:none; }
+  .switch-player{
+    display:block;
+    text-align:center;
+    margin:2px auto 0;
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:800;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" id="app"></div>
+</div>
+
+<script>
+/* ===================== KANA DATA ===================== */
+const BASIC = [
+ ["a","あ","ア"],["i","い","イ"],["u","う","ウ"],["e","え","エ"],["o","お","オ"],
+ ["ka","か","カ"],["ki","き","キ"],["ku","く","ク"],["ke","け","ケ"],["ko","こ","コ"],
+ ["sa","さ","サ"],["shi","し","シ"],["su","す","ス"],["se","せ","セ"],["so","そ","ソ"],
+ ["ta","た","タ"],["chi","ち","チ"],["tsu","つ","ツ"],["te","て","テ"],["to","と","ト"],
+ ["na","な","ナ"],["ni","に","ニ"],["nu","ぬ","ヌ"],["ne","ね","ネ"],["no","の","ノ"],
+ ["ha","は","ハ"],["hi","ひ","ヒ"],["fu","ふ","フ"],["he","へ","ヘ"],["ho","ほ","ホ"],
+ ["ma","ま","マ"],["mi","み","ミ"],["mu","む","ム"],["me","め","メ"],["mo","も","モ"],
+ ["ya","や","ヤ"],["yu","ゆ","ユ"],["yo","よ","ヨ"],
+ ["ra","ら","ラ"],["ri","り","リ"],["ru","る","ル"],["re","れ","レ"],["ro","ろ","ロ"],
+ ["wa","わ","ワ"],["wo","を","ヲ"],["n","ん","ン"]
+];
+const ALL_DATA = BASIC.map((e,i)=>({ id:"k"+i, r:e[0], h:e[1], k:e[2] }));
+const STARTER_IDS = new Set(["k0","k1","k2","k3","k4","k5","k6","k7","k8","k9","k10","k11","k12","k13","k14"]); // vowels + k-row + s-row
+
+const DAKUTEN_RAW = [
+ ["ga","が","ガ"],["gi","ぎ","ギ"],["gu","ぐ","グ"],["ge","げ","ゲ"],["go","ご","ゴ"],
+ ["za","ざ","ザ"],["ji","じ","ジ"],["zu","ず","ズ"],["ze","ぜ","ゼ"],["zo","ぞ","ゾ"],
+ ["da","だ","ダ"],["de","で","デ"],["do","ど","ド"],
+ ["ba","ば","バ"],["bi","び","ビ"],["bu","ぶ","ブ"],["be","べ","ベ"],["bo","ぼ","ボ"],
+ ["pa","ぱ","パ"],["pi","ぴ","ピ"],["pu","ぷ","プ"],["pe","ぺ","ペ"],["po","ぽ","ポ"]
+];
+const DAKUTEN_DATA = DAKUTEN_RAW.map((e,i)=>({ id:"d"+i, r:e[0], h:e[1], k:e[2] }));
+
+/* ===================== PICTURE WORDS ===================== */
+const WORDS_RAW = [
+ ["car",   "くるま", "🚗"],
+ ["apple", "りんご", "🍎"],
+ ["dog",   "いぬ",   "🐶"],
+ ["cat",   "ねこ",   "🐱"],
+ ["sun",   "たいよう","☀️"],
+ ["book",  "ほん",   "📖"],
+ ["fish",  "さかな", "🐟"],
+ ["banana","バナナ", "🍌"],
+ ["ball",  "ボール", "⚽"],
+ ["milk",  "ミルク", "🥛"],
+ ["water", "みず",   "💧"],
+ ["tree",  "き",     "🌳"],
+ ["flower","はな",   "🌸"],
+ ["bird",  "とり",   "🐦"],
+ ["egg",   "たまご", "🥚"],
+ ["house", "いえ",   "🏠"],
+ ["star",  "ほし",   "⭐"],
+ ["moon",  "つき",   "🌙"],
+ ["rain",  "あめ",   "🌧️"],
+ ["train", "でんしゃ","🚃"]
+];
+const WORDS = WORDS_RAW.map((e,i)=>({ id:"w"+i, r:e[0], h:e[1], emoji:e[2] }));
+
+/* ===================== CREATURES ===================== */
+const CREATURES = [
+  { id:1, name:"Mochibi",    primary:"#F7C9D6", accent:"#E88AA3", ear:"round",  symbol:"heart" },
+  { id:2, name:"Hoshimaru",  primary:"#8EC9F7", accent:"#4E8FD1", ear:"pointy", symbol:"star" },
+  { id:3, name:"Kumopon",    primary:"#F5F5F0", accent:"#C9C9BE", ear:"floppy", symbol:"cloud" },
+  { id:4, name:"Shimatan",   primary:"#FFD97D", accent:"#E0A93A", ear:"pointy", symbol:"stripe" },
+  { id:5, name:"Tsubudama",  primary:"#C6E8B0", accent:"#7FBE5A", ear:"round",  symbol:"dot" },
+  { id:6, name:"Ribonko",    primary:"#E3B8F2", accent:"#B767D6", ear:"floppy", symbol:"bow" },
+  { id:7, name:"Kirakira",   primary:"#B8F2E6", accent:"#4FC7B0", ear:"star",   symbol:"diamond" },
+  { id:8, name:"Namiko",     primary:"#A7D8F0", accent:"#4A9DC9", ear:"round",  symbol:"wave" },
+  { id:9, name:"Happa",      primary:"#B7E4A0", accent:"#5FA83D", ear:"tufty",  symbol:"leaf" },
+  { id:10,name:"Tsukimi",    primary:"#D8CFF2", accent:"#8E7BC9", ear:"pointy", symbol:"moon" },
+  { id:11,name:"Akapon",     primary:"#FFB199", accent:"#E8785A", ear:"round",  symbol:"heart" },
+  { id:12,name:"Kiiroshi",   primary:"#FFE58A", accent:"#D9A62A", ear:"star",   symbol:"star" },
+  { id:13,name:"Fuwari",     primary:"#FFE9DA", accent:"#E8B99A", ear:"floppy", symbol:"cloud" },
+  { id:14,name:"Shimashima", primary:"#E8A66B", accent:"#B97430", ear:"pointy", symbol:"stripe" },
+  { id:15,name:"Buchiko",    primary:"#D8B8F2", accent:"#A867D6", ear:"round",  symbol:"dot" },
+  { id:16,name:"Musubi",     primary:"#FFB8C9", accent:"#E8698A", ear:"floppy", symbol:"bow" },
+  { id:17,name:"Kagayaki",   primary:"#E8E8F5", accent:"#A8A8C9", ear:"star",   symbol:"diamond" },
+  { id:18,name:"Sazanami",   primary:"#7FB8E0", accent:"#2F6FA8", ear:"round",  symbol:"wave" },
+  { id:19,name:"Midorimaru", primary:"#7FBE7F", accent:"#3F8F3F", ear:"tufty",  symbol:"leaf" },
+  { id:20,name:"Yozora",     primary:"#7A6FA8", accent:"#4A3F78", ear:"pointy", symbol:"moon" },
+  { id:21,name:"Kirari",     primary:"#FFD1E8", accent:"#E85AA0", ear:"star",   symbol:"heart" },
+  { id:22,name:"Aoi",        primary:"#A8D8FF", accent:"#4A90D9", ear:"round",  symbol:"wave" },
+  { id:23,name:"Kohaku",     primary:"#FFDCA8", accent:"#D98F3A", ear:"pointy", symbol:"diamond" },
+  { id:24,name:"Sumire",     primary:"#C8B8F0", accent:"#7B5EC7", ear:"floppy", symbol:"star" },
+  { id:25,name:"Ryokuchi",   primary:"#A8E0B0", accent:"#4A9D5C", ear:"tufty",  symbol:"dot" },
+  { id:26,name:"Benikoi",    primary:"#F0A8A8", accent:"#C74A4A", ear:"round",  symbol:"heart" },
+  { id:27,name:"Ginga",      primary:"#D0D0F0", accent:"#6A6AB8", ear:"star",   symbol:"moon" },
+  { id:28,name:"Kohana",     primary:"#FFC8DC", accent:"#E070A0", ear:"floppy", symbol:"bow" },
+  { id:29,name:"Taiyoumaru", primary:"#FFE0A0", accent:"#E8A030", ear:"pointy", symbol:"star" },
+  { id:30,name:"??? Mysterious", primary:"#FFE9A8", accent:"#8B5CF0", ear:"star", symbol:"diamond", special:true }
+];
+
+// Every 3 stars earns a new creature. Simple and predictable for young kids.
+function catchThreshold(catchNumber){
+  return 3 * catchNumber;
+}
+
+// The very last creature gets a special personalized name for known players.
+const SPECIAL_LAST_NAMES = { "Noah": "NoaUNKUS", "Mia": "MidliKAKUS" };
+function creatureDisplayName(creature){
+  const isLast = creature.id === CREATURES[CREATURES.length-1].id;
+  if(isLast && SPECIAL_LAST_NAMES[state.player]){
+    return SPECIAL_LAST_NAMES[state.player];
+  }
+  return creature.name;
+}
+
+function earsSvg(type, accent){
+  switch(type){
+    case "round":  return `<circle cx="35" cy="30" r="12" fill="${accent}"/><circle cx="85" cy="30" r="12" fill="${accent}"/>`;
+    case "pointy": return `<path d="M28 34 L20 8 L44 26 Z" fill="${accent}"/><path d="M92 34 L100 8 L76 26 Z" fill="${accent}"/>`;
+    case "floppy": return `<ellipse cx="22" cy="46" rx="10" ry="18" fill="${accent}"/><ellipse cx="98" cy="46" rx="10" ry="18" fill="${accent}"/>`;
+    case "star":   return `<path d="M32 10 L36 22 L48 22 L38 30 L42 42 L32 34 L22 42 L26 30 L16 22 L28 22 Z" fill="${accent}"/>
+                            <path d="M88 10 L92 22 L104 22 L94 30 L98 42 L88 34 L78 42 L82 30 L72 22 L84 22 Z" fill="${accent}"/>`;
+    case "tufty":  return `<path d="M30 28 Q26 10 40 18 Q34 24 30 28Z" fill="${accent}"/><path d="M90 28 Q94 10 80 18 Q86 24 90 28Z" fill="${accent}"/>`;
+    default: return "";
+  }
+}
+function symbolSvg(type, accent){
+  const cx=60, cy=82;
+  switch(type){
+    case "heart":  return `<path d="M60 90 C48 78 40 70 40 61 C40 54 46 50 52 50 C56 50 60 53 60 58 C60 53 64 50 68 50 C74 50 80 54 80 61 C80 70 72 78 60 90Z" fill="${accent}" opacity="0.9"/>`;
+    case "star":   return `<path d="M60 66 L64 78 L77 78 L66 86 L70 98 L60 90 L50 98 L54 86 L43 78 L56 78Z" fill="${accent}" opacity="0.9"/>`;
+    case "cloud":  return `<ellipse cx="50" cy="84" rx="12" ry="9" fill="${accent}" opacity="0.9"/><ellipse cx="65" cy="80" rx="14" ry="11" fill="${accent}" opacity="0.9"/><ellipse cx="78" cy="86" rx="10" ry="8" fill="${accent}" opacity="0.9"/>`;
+    case "stripe": return `<rect x="42" y="72" width="36" height="6" rx="3" fill="${accent}" opacity="0.9" transform="rotate(-12 60 75)"/><rect x="42" y="84" width="36" height="6" rx="3" fill="${accent}" opacity="0.9" transform="rotate(-12 60 87)"/><rect x="42" y="96" width="36" height="6" rx="3" fill="${accent}" opacity="0.9" transform="rotate(-12 60 99)"/>`;
+    case "dot":    return `<circle cx="48" cy="76" r="6" fill="${accent}" opacity="0.9"/><circle cx="68" cy="70" r="7" fill="${accent}" opacity="0.9"/><circle cx="60" cy="92" r="5" fill="${accent}" opacity="0.9"/>`;
+    case "bow":    return `<path d="M60 82 L44 72 L44 92 Z" fill="${accent}" opacity="0.9"/><path d="M60 82 L76 72 L76 92 Z" fill="${accent}" opacity="0.9"/><circle cx="60" cy="82" r="5" fill="${accent}"/>`;
+    case "diamond":return `<rect x="50" y="68" width="24" height="24" rx="4" fill="${accent}" opacity="0.9" transform="rotate(45 62 80)"/>`;
+    case "wave":   return `<path d="M40 82 Q48 70 56 82 T72 82 T88 82" stroke="${accent}" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+    case "leaf":   return `<ellipse cx="60" cy="82" rx="16" ry="10" fill="${accent}" opacity="0.9" transform="rotate(-25 60 82)"/><line x1="48" y1="88" x2="72" y2="76" stroke="#ffffffaa" stroke-width="2"/>`;
+    case "moon":   return `<path d="M68 66 A16 16 0 1 0 68 98 A12 12 0 1 1 68 66Z" fill="${accent}" opacity="0.9"/>`;
+    default: return "";
+  }
+}
+function shadeColor(hex, percent){
+  const num = parseInt(hex.replace("#",""), 16);
+  let r = (num >> 16) + Math.round(255*percent/100);
+  let g = ((num >> 8) & 0x00FF) + Math.round(255*percent/100);
+  let b = (num & 0x0000FF) + Math.round(255*percent/100);
+  r = Math.min(255, Math.max(0, r));
+  g = Math.min(255, Math.max(0, g));
+  b = Math.min(255, Math.max(0, b));
+  return "#" + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).slice(1);
+}
+
+function creatureSvg(c, size){
+  size = size || 120;
+  const gBody = "gBody" + c.id;
+  const gEar = "gEar" + c.id;
+  const lightP = shadeColor(c.primary, 24);
+  const darkP  = shadeColor(c.primary, -20);
+  const lightA = shadeColor(c.accent, 22);
+  const darkA  = shadeColor(c.accent, -22);
+  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}">
+    <defs>
+      <radialGradient id="${gBody}" cx="38%" cy="28%" r="78%">
+        <stop offset="0%" stop-color="${lightP}"/>
+        <stop offset="55%" stop-color="${c.primary}"/>
+        <stop offset="100%" stop-color="${darkP}"/>
+      </radialGradient>
+      <radialGradient id="${gEar}" cx="35%" cy="25%" r="85%">
+        <stop offset="0%" stop-color="${lightA}"/>
+        <stop offset="60%" stop-color="${c.accent}"/>
+        <stop offset="100%" stop-color="${darkA}"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="60" cy="107" rx="36" ry="7" fill="#3A2E4D" opacity="0.14"/>
+    ${earsSvg(c.ear, `url(#${gEar})`)}
+    <ellipse cx="60" cy="68" rx="46" ry="40" fill="url(#${gBody})"/>
+    ${symbolSvg(c.symbol, darkA)}
+    <ellipse cx="46" cy="45" rx="23" ry="13" fill="#ffffff" opacity="0.3" transform="rotate(-20 46 45)"/>
+    <circle cx="45" cy="60" r="7.5" fill="#2A2138"/>
+    <circle cx="75" cy="60" r="7.5" fill="#2A2138"/>
+    <circle cx="47.5" cy="57.3" r="2.5" fill="#fff"/>
+    <circle cx="77.5" cy="57.3" r="2.5" fill="#fff"/>
+    <circle cx="43.2" cy="62.8" r="1.1" fill="#ffffffaa"/>
+    <circle cx="73.2" cy="62.8" r="1.1" fill="#ffffffaa"/>
+    <path d="M50 75 Q60 82.5 70 75" stroke="#2A2138" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="38" cy="74" rx="6" ry="4.4" fill="#ffffff8f"/>
+    <ellipse cx="82" cy="74" rx="6" ry="4.4" fill="#ffffff8f"/>
+  </svg>`;
+}
+function lockedSvg(size){
+  size = size || 56;
+  return `<svg viewBox="0 0 120 120" width="${size}" height="${size}">
+    <defs>
+      <radialGradient id="gLocked" cx="38%" cy="28%" r="78%">
+        <stop offset="0%" stop-color="#F0ECFA"/>
+        <stop offset="60%" stop-color="#E4DEF2"/>
+        <stop offset="100%" stop-color="#CFC5E8"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="60" cy="107" rx="36" ry="7" fill="#3A2E4D" opacity="0.08"/>
+    <ellipse cx="60" cy="68" rx="46" ry="40" fill="url(#gLocked)"/>
+    <text x="60" y="82" font-size="36" font-weight="900" fill="#B8ADD6" text-anchor="middle">?</text>
+  </svg>`;
+}
+const HELPER = CREATURES[0]; // Mochibi cheers you on during practice
+
+/* ===================== AUDIO ===================== */
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+  }
+  return audioCtx;
+}
+function playCorrectSound(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  try{
+    if(ctx.state==="suspended") ctx.resume();
+    const now = ctx.currentTime;
+    [880, 1108.7, 1318.5].forEach((freq,i)=>{
+      const t = now + i*0.07;
+      const osc = ctx.createOscillator(); const gain = ctx.createGain();
+      osc.type="sine"; osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.24, t+0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+0.3);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t+0.35);
+    });
+  }catch(e){}
+}
+function playTryAgainSound(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  try{
+    if(ctx.state==="suspended") ctx.resume();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.type="sine"; osc.frequency.setValueAtTime(330, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now+0.18);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.14, now+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+0.22);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now+0.25);
+  }catch(e){}
+}
+function playCatchFanfare(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  try{
+    if(ctx.state==="suspended") ctx.resume();
+    const now = ctx.currentTime;
+    [659.3,783.99,987.77,1174.7,1567.98].forEach((freq,i)=>{
+      const t = now + i*0.09;
+      const osc = ctx.createOscillator(); const gain = ctx.createGain();
+      osc.type="triangle"; osc.frequency.value=freq;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.22, t+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t+0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t+0.45);
+    });
+  }catch(e){}
+}
+
+/* ===================== STATE ===================== */
+const state = {
+  player:null,
+  mode:"letters", // "letters" | "words"
+  scripts:{ hiragana:true, katakana:false },
+  letterRange:"starter", // "starter" | "all" | "dakuten"
+  pool:[],
+  stars:0,
+  current:null,
+  currentScript:null,
+  options:[],
+  lastId:null,
+  awaiting:false,
+  wrongAttempts:0
+};
+
+function isAdvancedPlayer(){
+  return state.player !== "Mia";
+}
+
+const CATEGORY_CONFIG = {
+  hiragana: { cap: 10, gap: 5 },
+  katakana: { cap: 10, gap: 5 },
+  dakuten:  { cap: Infinity, gap: 4 },
+  words:    { cap: 10, gap: 5 }
+};
+
+function loadCategoryStars(){
+  try{ return JSON.parse(localStorage.getItem("kanaQuestCatStars_"+state.player) || '{"hiragana":0,"katakana":0,"dakuten":0,"words":0}'); }
+  catch(e){ return {hiragana:0,katakana:0,dakuten:0,words:0}; }
+}
+function saveCategoryStars(obj){
+  try{ localStorage.setItem("kanaQuestCatStars_"+state.player, JSON.stringify(obj)); }catch(e){}
+}
+
+function loadCaught(){
+  try{ return JSON.parse(localStorage.getItem("kanaQuestCaught_"+state.player) || "[]"); }catch(e){ return []; }
+}
+function saveCaught(list){
+  try{ localStorage.setItem("kanaQuestCaught_"+state.player, JSON.stringify(list)); }catch(e){}
+}
+function loadTotalStars(){
+  try{ return parseInt(localStorage.getItem("kanaQuestTotalStars_"+state.player) || "0", 10) || 0; }catch(e){ return 0; }
+}
+function saveTotalStars(n){
+  try{ localStorage.setItem("kanaQuestTotalStars_"+state.player, String(n)); }catch(e){}
+}
+
+const app = document.getElementById("app");
+
+/* ===================== PLAYER SELECT ===================== */
+const PLAYER_ICONS = { };
+function playerIconSvg(name, size){
+  // give each known player a consistent creature avatar; unknown names get a random-ish but stable one
+  const idx = Math.abs(hashCode(name)) % CREATURES.length;
+  return creatureSvg(CREATURES[idx], size || 64);
+}
+function hashCode(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = ((h<<5)-h) + str.charCodeAt(i); h |= 0; }
+  return h;
+}
+function getKnownPlayers(){
+  try{ return JSON.parse(localStorage.getItem("kanaQuestPlayers") || '["Noah","Mia"]'); }
+  catch(e){ return ["Noah","Mia"]; }
+}
+function saveKnownPlayers(list){
+  try{ localStorage.setItem("kanaQuestPlayers", JSON.stringify(list)); }catch(e){}
+}
+const DEFAULT_PLAYERS = ["Noah","Mia"];
+
+function renderPlayerSelect(){
+  const players = getKnownPlayers();
+  app.innerHTML = `
+    <h1 class="brand">🐾 Kana Quest</h1>
+    <div class="brand-sub">Who's playing today?</div>
+    <div class="player-grid">
+      ${players.map(p => `
+        <div class="player-card-wrap">
+          ${!DEFAULT_PLAYERS.includes(p) ? `<button class="player-delete" data-delete="${p}">✕</button>` : ""}
+          <button class="player-card" data-player="${p}">
+            ${playerIconSvg(p, 64)}
+            <div class="p-name">${p}</div>
+          </button>
+        </div>
+      `).join("")}
+      <button class="player-card other" id="addPlayerBtn">
+        <div style="font-size:40px;line-height:64px;">➕</div>
+        <div class="p-name">Someone else</div>
+      </button>
+    </div>
+  `;
+  app.querySelectorAll("[data-player]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      state.player = btn.dataset.player;
+      renderSetup();
+    });
+  });
+  app.querySelectorAll("[data-delete]").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      showDeletePlayerConfirm(btn.dataset.delete);
+    });
+  });
+  document.getElementById("addPlayerBtn").addEventListener("click", renderAddPlayer);
+}
+
+function showDeletePlayerConfirm(name){
+  const overlay = document.createElement("div");
+  overlay.className = "catch-overlay";
+  overlay.innerHTML = `
+    <div class="catch-card">
+      <div style="font-size:44px;">🗑️</div>
+      <div class="catch-title">Remove player</div>
+      <div class="catch-name" style="font-size:20px;">${name}?</div>
+      <div style="color:var(--ink-soft);font-weight:700;font-size:13.5px;margin-bottom:16px;">Their saved creatures will be removed too.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="back-btn" id="cancelDelete" style="margin-top:0;">Cancel</button>
+        <button class="catch-btn" id="confirmDelete" style="background:var(--bad);box-shadow:0 5px 0 #D94E4E;">Remove</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById("cancelDelete").addEventListener("click", ()=> overlay.remove());
+  document.getElementById("confirmDelete").addEventListener("click", ()=>{
+    const players = getKnownPlayers().filter(p => p !== name);
+    saveKnownPlayers(players);
+    try{
+      localStorage.removeItem("kanaQuestCaught_"+name);
+      localStorage.removeItem("kanaQuestTotalStars_"+name);
+    }catch(e){}
+    overlay.remove();
+    renderPlayerSelect();
+  });
+}
+
+function renderAddPlayer(){
+  app.innerHTML = `
+    <h1 class="brand">✏️ Your Name</h1>
+    <div class="brand-sub">Type your name below</div>
+    <input type="text" id="nameInput" maxlength="16" autocomplete="off" autocapitalize="words"
+      placeholder="e.g. Sam"
+      style="width:100%;min-height:56px;padding:14px 16px;font-size:20px;font-weight:700;
+      border:2px solid #E4DEF2;border-radius:16px;background:#F7F3FF;color:var(--ink);
+      outline:none;box-sizing:border-box;margin-top:8px;text-align:center;">
+    <button class="start-btn" id="addPlayerConfirm">✔ Let's Go!</button>
+    <button class="back-btn" id="addPlayerBack">◀ Back</button>
+  `;
+  const input = document.getElementById("nameInput");
+  input.focus();
+  function confirmName(){
+    const name = input.value.trim();
+    if(!name) { input.focus(); return; }
+    const clean = name.slice(0,16);
+    const players = getKnownPlayers();
+    if(!players.includes(clean)){
+      players.push(clean);
+      saveKnownPlayers(players);
+    }
+    state.player = clean;
+    renderSetup();
+  }
+  document.getElementById("addPlayerConfirm").addEventListener("click", confirmName);
+  input.addEventListener("keydown", (e)=>{ if(e.key==="Enter") confirmName(); });
+  document.getElementById("addPlayerBack").addEventListener("click", renderPlayerSelect);
+}
+
+/* ===================== SETUP ===================== */
+function renderSetup(){
+  const isWords = state.mode === "words";
+  const advanced = isAdvancedPlayer();
+  // Mia keeps the simple Starter/All choice. Noah and any new players get All/Dakuten instead.
+  if(advanced && state.letterRange === "starter") state.letterRange = "all";
+  if(!advanced && state.letterRange === "dakuten") state.letterRange = "starter";
+
+  app.innerHTML = `
+    <h1 class="brand">🐾 Kana Quest</h1>
+    <div class="brand-sub">Learn letters, catch friends!</div>
+    <button class="switch-player" id="switchPlayerBtn">👤 Playing as ${state.player} — switch player</button>
+
+    <div class="section-title">What do you want to practice?</div>
+    <div class="btn-row">
+      <button class="big-choice ${!isWords?'on':''}" data-toggle="mode" data-val="letters">🔤 Letters</button>
+      <button class="big-choice ${isWords?'on teal':''}" data-toggle="mode" data-val="words">🖼️ Words</button>
+    </div>
+
+    ${!isWords ? `
+      <div class="section-title">Pick a script</div>
+      <div class="btn-row">
+        <button class="big-choice ${state.scripts.hiragana?'on':''}" data-toggle="script" data-val="hiragana">ひらがな</button>
+        <button class="big-choice ${state.scripts.katakana?'on teal':''}" data-toggle="script" data-val="katakana">カタカナ</button>
+      </div>
+
+      <div class="section-title">How many letters?</div>
+      <div class="btn-row">
+        ${!advanced ? `
+          <button class="big-choice ${state.letterRange==='starter'?'on':''}" data-toggle="range" data-val="starter">🌱 Starter (15)</button>
+          <button class="big-choice ${state.letterRange==='all'?'on teal':''}" data-toggle="range" data-val="all">🌟 All (46)</button>
+        ` : `
+          <button class="big-choice ${state.letterRange==='all'?'on':''}" data-toggle="range" data-val="all">🌟 All (46)</button>
+          <button class="big-choice ${state.letterRange==='dakuten'?'on teal':''}" data-toggle="range" data-val="dakuten">゛゜ Dakuten</button>
+        `}
+      </div>
+    ` : `
+      <div class="hint" style="text-align:center;color:var(--ink-soft);font-weight:700;margin-top:8px;">
+        See a picture, pick the matching word! 🚗🍎🐶
+      </div>
+    `}
+
+    <button class="start-btn" id="startBtn">▶ Let's Play!</button>
+    <button class="collection-link" id="collectionBtn">🎒 My Pokymon</button>
+    <div class="hint" id="msg" style="text-align:center;color:var(--bad);font-weight:700;margin-top:10px;"></div>
+  `;
+
+  app.querySelectorAll('[data-toggle="mode"]').forEach(el=>{
+    el.addEventListener("click", ()=>{
+      state.mode = el.dataset.val;
+      renderSetup();
+    });
+  });
+  app.querySelectorAll('[data-toggle="script"]').forEach(el=>{
+    el.addEventListener("click", ()=>{
+      state.scripts[el.dataset.val] = !state.scripts[el.dataset.val];
+      renderSetup();
+    });
+  });
+  app.querySelectorAll('[data-toggle="range"]').forEach(el=>{
+    el.addEventListener("click", ()=>{
+      state.letterRange = el.dataset.val;
+      renderSetup();
+    });
+  });
+  document.getElementById("startBtn").addEventListener("click", startGame);
+  document.getElementById("collectionBtn").addEventListener("click", renderCollection);
+  document.getElementById("switchPlayerBtn").addEventListener("click", renderPlayerSelect);
+}
+
+function startGame(){
+  if(state.mode === "words"){
+    state.pool = WORDS;
+  } else {
+    if(!state.scripts.hiragana && !state.scripts.katakana){
+      document.getElementById("msg").textContent = "Pick hiragana or katakana first!";
+      return;
+    }
+    if(state.letterRange === "dakuten"){
+      state.pool = DAKUTEN_DATA;
+    } else if(state.letterRange === "starter"){
+      state.pool = ALL_DATA.filter(d => STARTER_IDS.has(d.id));
+    } else {
+      state.pool = ALL_DATA;
+    }
+  }
+  state.stars = 0;
+  state.lastId = null;
+  nextRound();
+}
+
+/* ===================== PRACTICE ===================== */
+function pickScript(){
+  if(state.scripts.hiragana && state.scripts.katakana) return Math.random()<0.5 ? "hiragana":"katakana";
+  return state.scripts.hiragana ? "hiragana" : "katakana";
+}
+
+function nextRound(){
+  const candidates = state.pool.filter(d => d.id !== state.lastId);
+  const pickFrom = candidates.length ? candidates : state.pool;
+  state.current = pickFrom[Math.floor(Math.random()*pickFrom.length)];
+  state.lastId = state.current.id;
+  if(state.mode !== "words"){
+    state.currentScript = pickScript();
+  }
+
+  const others = state.pool.filter(d => d.id !== state.current.id);
+  const shuffled = others.sort(()=>Math.random()-0.5).slice(0,3);
+  state.options = [state.current, ...shuffled].sort(()=>Math.random()-0.5);
+  state.awaiting = false;
+  state.wrongAttempts = 0;
+  renderPractice();
+}
+
+function scriptLabel(s){ return s==="hiragana" ? "Hiragana" : "Katakana"; }
+
+function renderPractice(){
+  const d = state.current;
+  const isWords = state.mode === "words";
+
+  const promptHtml = isWords
+    ? `<div class="script-tag">Which word is this?</div><div class="word-badge"><span>${d.emoji}</span></div>`
+    : `<div class="script-tag">${scriptLabel(state.currentScript)}</div><div class="prompt-kana">${state.currentScript==="hiragana" ? d.h : d.k}</div>`;
+
+  app.innerHTML = `
+    <div class="topbar">
+      <div class="stars">⭐ ${state.stars}</div>
+      <button class="quit-btn" id="quitBtn">✕ Stop</button>
+    </div>
+    <div class="mascot-row" id="mascotRow">${creatureSvg(HELPER, 64)}</div>
+    <div class="prompt-card">
+      ${promptHtml}
+    </div>
+    <div class="answers-grid" id="answersGrid">
+      ${state.options.map(opt => `<button class="answer-btn" data-ans-id="${opt.id}">${isWords ? opt.h : opt.r}</button>`).join("")}
+    </div>
+  `;
+
+  document.getElementById("quitBtn").addEventListener("click", endGame);
+  document.querySelectorAll(".answer-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>handleAnswer(btn));
+  });
+}
+
+function handleAnswer(btn){
+  if(state.awaiting) return;
+  const correct = btn.dataset.ansId === state.current.id;
+  const mascotRow = document.getElementById("mascotRow");
+  const starsEl = document.querySelector(".stars");
+
+  if(correct){
+    state.awaiting = true;
+    btn.classList.add("correct");
+    document.querySelectorAll(".answer-btn").forEach(b=>{ if(b!==btn) b.classList.add("disabled"); });
+    mascotRow.classList.add("happy");
+    const gain = state.mode === "words" ? 2 : 1;
+    state.stars += gain;
+    if(starsEl) starsEl.textContent = "⭐ " + state.stars;
+    playCorrectSound();
+
+    const caught = loadCaught();
+    let shouldCatch = false;
+
+    if(isAdvancedPlayer()){
+      const category = state.mode === "words" ? "words" : (state.letterRange === "dakuten" ? "dakuten" : state.currentScript);
+      const cfg = CATEGORY_CONFIG[category];
+      const catStars = loadCategoryStars();
+      const before = catStars[category] || 0;
+      if(before < cfg.cap){
+        const after = Math.min(cfg.cap, before + gain);
+        catStars[category] = after;
+        saveCategoryStars(catStars);
+        const beforeCount = Math.floor(before / cfg.gap);
+        const afterCount = Math.floor(after / cfg.gap);
+        if(afterCount > beforeCount && caught.length < CREATURES.length){
+          shouldCatch = true;
+        }
+      }
+    } else {
+      const totalStars = loadTotalStars() + gain;
+      saveTotalStars(totalStars);
+      const nextCatchNumber = caught.length + 1;
+      const needed = catchThreshold(nextCatchNumber);
+      if(caught.length < CREATURES.length && totalStars >= needed){
+        shouldCatch = true;
+      }
+    }
+
+    if(shouldCatch){
+      const uncaught = CREATURES.filter(c => !caught.includes(c.id)).sort((a,b)=>a.id-b.id);
+      const newCreature = uncaught[0];
+      setTimeout(()=>{
+        caught.push(newCreature.id);
+        saveCaught(caught);
+        showCatchOverlay(newCreature);
+      }, 700);
+    } else {
+      setTimeout(nextRound, 800);
+    }
+  } else {
+    btn.classList.add("wrong");
+    btn.classList.add("disabled");
+    mascotRow.classList.remove("happy");
+    mascotRow.classList.add("sad");
+    state.stars = Math.max(0, state.stars - 1);
+    if(starsEl) starsEl.textContent = "⭐ " + state.stars;
+    if(isAdvancedPlayer()){
+      const category = state.mode === "words" ? "words" : (state.letterRange === "dakuten" ? "dakuten" : state.currentScript);
+      const catStars = loadCategoryStars();
+      catStars[category] = Math.max(0, (catStars[category] || 0) - 1);
+      saveCategoryStars(catStars);
+    } else {
+      const reducedTotal = Math.max(0, loadTotalStars() - 1);
+      saveTotalStars(reducedTotal);
+    }
+    playTryAgainSound();
+    setTimeout(()=>{ mascotRow.classList.remove("sad"); }, 400);
+
+    state.wrongAttempts++;
+    if(state.mode === "words" && state.wrongAttempts >= 2){
+      state.awaiting = true;
+      document.querySelectorAll(".answer-btn").forEach(b=>b.classList.add("disabled"));
+      setTimeout(nextRound, 900);
+    }
+  }
+}
+
+function playOrbDropSound(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  try{
+    if(ctx.state==="suspended") ctx.resume();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.type="sine"; osc.frequency.setValueAtTime(500, now);
+    osc.frequency.exponentialRampToValueAtTime(160, now+0.28);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now+0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+0.32);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now+0.35);
+  }catch(e){}
+}
+function playWobbleTick(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  try{
+    if(ctx.state==="suspended") ctx.resume();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.type="triangle"; osc.frequency.value=420;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+0.1);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now+0.12);
+  }catch(e){}
+}
+
+function showCatchOverlay(creature){
+  const overlay = document.createElement("div");
+  overlay.className = "catch-overlay";
+  const sparkleAngles = [0,45,90,135,180,225,270,315];
+  overlay.innerHTML = `
+    <div class="catch-card">
+      <div class="capture-scene">
+        <div class="capture-orb" id="orb"></div>
+        <div class="capture-caught-glow"></div>
+        ${sparkleAngles.map(a => `<div class="capture-sparkle" style="--sx:${Math.round(Math.cos(a*Math.PI/180)*70)}px; --sy:${Math.round(Math.sin(a*Math.PI/180)*70)}px;"></div>`).join("")}
+      </div>
+      <div class="capture-status" id="captureStatus">Something appeared...</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  playOrbDropSound();
+
+  const orb = document.getElementById("orb");
+  const status = document.getElementById("captureStatus");
+
+  setTimeout(()=>{ status.textContent = "Catching..."; orb.classList.add("wobbling"); }, 500);
+  setTimeout(playWobbleTick, 550);
+  setTimeout(playWobbleTick, 900);
+  setTimeout(playWobbleTick, 1250);
+  setTimeout(()=>{ orb.classList.add("bursting"); }, 1650);
+
+  setTimeout(()=>{
+    playCatchFanfare();
+    const catchPhrase = state.player === "Mia" ? "Chytla si nového PokyMona!" : "Chytil si nového PokyMona!";
+    overlay.innerHTML = `
+      <div class="catch-card">
+        ${creatureSvg(creature, 120)}
+        <div class="catch-title">${catchPhrase}</div>
+        <div class="catch-name">${creatureDisplayName(creature)}</div>
+        <button class="catch-btn" id="catchContinue">Yay! Continue ▶</button>
+      </div>
+    `;
+    document.getElementById("catchContinue").addEventListener("click", ()=>{
+      overlay.remove();
+      nextRound();
+    });
+  }, 2100);
+}
+
+/* ===================== COLLECTION ===================== */
+const SPECIAL_BIOS = {
+  "Noah": "Hodnej Kluk má rád fotbal a rád čte. Věk 7, už se nepočůrává, a hodně prdí.",
+  "Mia":  "Malej čertík Bertík, věk 5, hodně krká a občas i dost prdí. Má ráda maminku a tatínka."
+};
+const SYMBOL_FLAVOR = {
+  heart:   "Loves giving hugs and making new friends!",
+  star:    "Always dreaming of shooting stars.",
+  cloud:   "Floats around on fluffy clouds all day.",
+  stripe:  "Super fast and loves to race.",
+  dot:     "Collects shiny little pebbles.",
+  bow:     "Always dressed up and ready for a party.",
+  diamond: "Sparkles brighter than anyone else.",
+  wave:    "Loves splashing around in the water.",
+  leaf:    "Grows a little every day, just like you!",
+  moon:    "Comes out to play when the stars shine."
+};
+function pokymonInfo(creature){
+  const lastId = CREATURES[CREATURES.length-1].id;
+  if(creature.id === lastId){
+    return SPECIAL_BIOS[state.player] || "A very special mysterious friend, just for you!";
+  }
+  return SYMBOL_FLAVOR[creature.symbol] || "A cheerful friend who loves to play!";
+}
+
+function showPokymonDetail(creature){
+  const overlay = document.createElement("div");
+  overlay.className = "catch-overlay";
+  overlay.innerHTML = `
+    <div class="catch-card">
+      ${creatureSvg(creature, 160)}
+      <div class="catch-name" style="margin-top:8px;">${creatureDisplayName(creature)}</div>
+      <div style="color:var(--ink-soft);font-weight:700;font-size:14.5px;line-height:1.5;margin:10px 0 18px;">${pokymonInfo(creature)}</div>
+      <button class="catch-btn" id="closeDetail">Close</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById("closeDetail").addEventListener("click", ()=> overlay.remove());
+}
+
+function renderCollection(){
+  const caught = loadCaught();
+  const lastId = CREATURES[CREATURES.length-1].id;
+  app.innerHTML = `
+    <h1 class="brand">🎒 ${state.player}'s Pokymons</h1>
+    <div class="brand-sub">${caught.length} / ${CREATURES.length} caught</div>
+    <div class="collection-grid">
+      ${CREATURES.map(c => {
+        const got = caught.includes(c.id);
+        const isSpecial = c.id === lastId;
+        const label = isSpecial
+          ? (got ? "✨ " + creatureDisplayName(c) : "✨ Mysterious Special")
+          : (got ? creatureDisplayName(c) : "???");
+        return `<div class="collection-slot ${isSpecial ? 'special' : ''}" ${got ? `data-view="${c.id}" style="cursor:pointer;"` : ''}>
+          ${got ? creatureSvg(c, 56) : lockedSvg(56)}
+          <div class="collection-name ${isSpecial ? 'special-label' : ''}">${label}</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <button class="back-btn" id="backBtn">◀ Back</button>
+  `;
+  document.getElementById("backBtn").addEventListener("click", renderSetup);
+  app.querySelectorAll("[data-view]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const creature = CREATURES.find(c => c.id === parseInt(el.dataset.view, 10));
+      if(creature) showPokymonDetail(creature);
+    });
+  });
+}
+
+/* ===================== END ===================== */
+function endGame(){
+  app.innerHTML = `
+    <h1 class="brand">🎉 Great Job!</h1>
+    <div class="summary-stars">⭐ ${state.stars}</div>
+    <div class="summary-note">stars earned this time!</div>
+    <button class="start-btn" id="againBtn">▶ Play Again</button>
+    <button class="collection-link" id="collectionBtn2">🎒 My Pokymon</button>
+  `;
+  document.getElementById("againBtn").addEventListener("click", renderSetup);
+  document.getElementById("collectionBtn2").addEventListener("click", renderCollection);
+}
+
+renderPlayerSelect();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
