@@ -1,0 +1,14 @@
+{
+  "name": "Kana Quest",
+  "short_name": "Kana Quest",
+  "description": "Learn hiragana and katakana by catching cute creatures!",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF1D6",
+  "theme_color": "#FF7A59",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
